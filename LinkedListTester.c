@@ -1,5 +1,10 @@
 #include "LinkedList.h"
 
+void print_integer( void* val, char* prefix )
+{
+  printf( "\n%s%d\n", prefix, *((int*) val) );
+}
+
 ////////////////////////////
 //  Main
 int main()
@@ -9,32 +14,51 @@ int main()
   int two = 2;
 
   int i;
-  
+  /**
   node* n = node_new();
   n->val  = &one;
   n->next = NULL;
   node_print_chain( n );
-  
+   one = 1
   node m;
   m.val  = &two;
   m.next = n;
   node_print_chain( &m );
 
   n->next = &m;
-
-  node* z = node_new();
-  z->next = NULL;
-  z->val = &zero;
+  */
 
   list_t list = list_new();
-  list->start = n;
-  list->size = 20;
-  list->end = z;
+  list_append(list, &zero);
+  list_append(list, &one);
+  printf("List has size %d, start %p, end %p",list->size,list->start,list->end);
 
   list_print_list(list, "");
 
-  list_get(list, 0);
+  print_pointer( list_get(list, 0), "List element 0: ");
 
+  list_t empty_list = list_new();
+  list_print_list(empty_list, "");  
+
+  //list_append(list, empty_list);
+
+  list_change_print_function(list, &print_integer);
+
+  list_print_list(list, "");
+
+  list_t list_of_lists = list_new();
+
+  list_append(list_of_lists, list);
+  list_append(list_of_lists, empty_list);
+
+  list_print_list(list_of_lists, "");
+
+  list_change_print_function(list_of_lists, &list_print_list);
+
+  list_change_print_function(empty_list, &list_print_list);
+  list_append(empty_list, list_new());
+
+  list_print_list(list_of_lists, "");
 
   /**
   node_print_chain( list->start );

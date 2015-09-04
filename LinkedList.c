@@ -72,7 +72,7 @@ void node_print_chain(node* n)
 
 void print_pointer( void* el, char* prefix )
 {
-  printf("\n%sAddress: %p\n", prefix,el);
+  printf("\n%sAddress: %p\n", prefix, el);
 }
 
 ////////////////////////////
@@ -128,6 +128,7 @@ int list_is_list(list_t list)
       printf("        List of size 1 invalid\n");
       return 0;
     }
+    return 1;
   }   
   else
   {
@@ -151,7 +152,7 @@ int list_is_list(list_t list)
     if(doubles != NULL)
       doubles = doubles->next;
   }
-  if( singles == doubles )
+  if( singles == doubles && singles != NULL )
   {
     // Detected circular condition
     printf("        Circular linked list invalid\n");
@@ -521,7 +522,7 @@ void list_print_list( list_t list, char* prefix )
 
   node* n = list->start;
   int count = list->size;
-  printf( "%s--- List of size %d ---", prefix, count );
+  printf( "%s---- List of size %d ----\n", prefix, count );
   while( n != NULL && count > 0 )
   {
     list->printFunc( n->val, innerPrefix );

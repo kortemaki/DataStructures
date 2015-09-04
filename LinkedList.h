@@ -9,8 +9,6 @@
 #undef ENABLE_TYPECHECK
 #endif
 
-#define ENABLE_TYPECHECK
-
 ////////////////////////////
 //  Node code
 
@@ -63,7 +61,6 @@ typedef void (*printFunction)( void *, char* );
 struct list_h
 {
   int size; // How many elements are in the list
-  int MAX_SIZE;
   node* start; // The first node in the list
   node* end; // The last node in the list
   printFunction printFunc;

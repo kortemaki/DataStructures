@@ -1,4 +1,4 @@
-all:
+LinkedList:
 	gcc LinkedListTester.c LinkedList.c
 
 clean:
