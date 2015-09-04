@@ -6,10 +6,12 @@
 stack_t stack_new()
 {
   stack_t new = (stack_t) malloc(sizeof( struct stack_h ));
-  new->elements = list_new(); //empty list
+  new->elements = list_new(); //empty list to hold our elements
+  list_change_print_function( new->elements, &print_pointer ); //default element printing function
   return new;
 }
 
+#ifdef ENABLE_TYPECHECK
 /**
  * Query method to check whether a stack_t is a valid stack
  * Returns 1 if stack is a stack
@@ -21,6 +23,8 @@ int stack_is_stack( stack_t stack )
     return 0;
   return list_is_list( stack->elements );
 }
+#endif
+
 
 /**
  * Method to query a stack as to whether it has any elements
@@ -41,7 +45,7 @@ int stack_size( stack_t stack )
 /**
  * Method to push a value onto the stack
  */
-void stack_push( stack_t stack, int val )
+void stack_push( stack_t stack, void* val )
 {
   list_prepend( stack->elements, val );
 }
@@ -49,7 +53,7 @@ void stack_push( stack_t stack, int val )
 /**
  * Method to remove the top value from the stack and return it
  */
-int stack_pop( stack_t stack )
+void* stack_pop( stack_t stack )
 {
   return list_remove( stack->elements, 0 );
 }
@@ -57,7 +61,7 @@ int stack_pop( stack_t stack )
 /**
  * Method to obtain the top value from the stack without removing it
  */
-int stack_peek( stack_t stack )
+void* stack_peek( stack_t stack )
 {
   return list_get( stack->elements, 0 );
 }
@@ -67,13 +71,32 @@ int stack_peek( stack_t stack )
  */
 void stack_swap( stack_t stack )
 {
-  int val1 = stack_pop( stack );
-  int val2 = stack_pop( stack );
+  void* val1 = stack_pop( stack );
+  void* val2 = stack_pop( stack );
   stack_push( stack, val1 );
   stack_push( stack, val2 );
 } 
 
-int main()
+void stack_change_print_function( stack_t stack, printFunction func )
 {
-  return 0;
+  list_change_print_function( stack->elements, func );
+}
+
+/**
+ * Method to print the elements of the stack in order from top to bottom
+ */
+void stack_print_stack( stack_t stack, char* prefix )
+{
+  printf( "%s=== Stack of size %d ===\n", prefix, stack_size(stack) );
+
+  //set up prefix for element print function calls
+  char innerPrefix[ strlen(prefix) + 3 ];
+  strcpy( innerPrefix, prefix );
+  strcpy( innerPrefix + strlen(prefix), "> " );
+
+  printf( "%sList of Elements\n", innerPrefix );
+
+  list_print_list( stack->elements, innerPrefix );
+
+  printf( "%s=======================\n", prefix );
 }

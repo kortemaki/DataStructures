@@ -72,7 +72,7 @@ void node_print_chain(node* n)
 
 void print_pointer( void* el, char* prefix )
 {
-  printf("\n%sAddress: %p\n", prefix, el);
+  printf("\n%sAddress: %p\n%s", prefix, el, prefix);
 }
 
 ////////////////////////////
@@ -517,17 +517,17 @@ void list_print_list( list_t list, char* prefix )
   
   //create prefix for element print functions
   char innerPrefix[ strlen(prefix) + 3 ];
-  strcpy( innerPrefix, "  " );
-  strcpy( innerPrefix + 2, prefix );
+  strcpy( innerPrefix, prefix );
+  strcpy( innerPrefix + strlen(prefix), "  " );
 
   node* n = list->start;
   int count = list->size;
-  printf( "%s---- List of size %d ----\n", prefix, count );
+  printf( "%s---- List of size %d ----\n%s", prefix, count, prefix );
   while( n != NULL && count > 0 )
   {
     list->printFunc( n->val, innerPrefix );
     n = n->next;
     count--;
   }
-  printf( "%s------------------------\n", prefix );
+  printf( "\n%s------------------------\n", prefix );
 }

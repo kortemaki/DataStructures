@@ -49,6 +49,8 @@ node* node_chain_clone( node* n );
  */
 void node_print_chain(node* n);
 
+void print_pointer( void* val, char* prefix );
+
 
 ////////////////////////////
 //  List code

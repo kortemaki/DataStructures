@@ -1,0 +1,10 @@
+#include "Stack.h"
+
+int main()
+{
+  stack_t stack = stack_new();
+
+  stack_print_stack(stack, "");
+
+  return 0;
+}
