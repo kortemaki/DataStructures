@@ -1,0 +1,11 @@
+================== VALID STRINGS ==================
+"Hello world"
+"Hello (world)"
+"(Hello) {world}"
+"(Hello([]{{[ ]}})world)"
+================= )INVALID STRINGS( =================
+"(Hello world"
+"(Hello )) ((world)"
+"(Hello {w)orld}"
+"(]Hello world[)"
+"([Hello) {world}]"
