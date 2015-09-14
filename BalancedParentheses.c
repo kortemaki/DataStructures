@@ -13,6 +13,8 @@ const char* const VALID = "valid";
 const char* const INVALID = "invalid";
 const char* const UNCLOSED_PARENS_LENGTH = "Unclosed parentheses at end of string of length %d\n";
 const char* const CANNOT_CLOSE_PAREN_AT_INDEX = "Cannot close the parentheses at index %d\n";
+const char* const CANNOT_CLOSE_BRACE_AT_INDEX = "Cannot close the braces at index %d\n";
+const char* const CANNOT_CLOSE_BRACK_AT_INDEX = "Cannot close the brackets at index %d\n";
 const char* const NONEMPTY_STACK_LENGTH = "Nonempty stack at end of string of length %d\n";
 const char* const VALID_STRING_LENGTH = "Valid string of length %d\n";
 
@@ -103,19 +105,31 @@ int isValid(char* string)
 		break;    
 
 	    case LEFT_BRACE:
-            stack_push(stack, LEFT_BRACE_TOKEN);
+                stack_push(stack, LEFT_BRACE_TOKEN);
   	        break;
 
 	    case RIGHT_BRACE:
-            if ( stack_is_empty(stack) || stack_pop(stack) != LEFT_BRACE_TOKEN )
+                if ( stack_is_empty(stack) || stack_pop(stack) != LEFT_BRACE_TOKEN )
+		{
+#ifdef DEBUG
+		    printf( CANNOT_CLOSE_BRACE_AT_INDEX, i );
+#endif
+  		    return 0;
+		}
   	        break;
 
             case LEFT_BRACK:
-            stack_push(stack, LEFT_BRACK_TOKEN);
+                stack_push(stack, LEFT_BRACK_TOKEN);
   	        break;	
 
 	    case RIGHT_BRACK:
-            if ( stack_is_empty(stack) || stack_pop(stack) != LEFT_BRACK_TOKEN )
+                if ( stack_is_empty(stack) || stack_pop(stack) != LEFT_BRACK_TOKEN )
+		{
+#ifdef DEBUG
+		    printf( CANNOT_CLOSE_BRACK_AT_INDEX, i );
+#endif
+   		    return 0;
+	        }
   	        break;
 
             case STRING_END:
