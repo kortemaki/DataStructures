@@ -103,15 +103,19 @@ int isValid(char* string)
 		break;    
 
 	    case LEFT_BRACE:
+            stack_push(stack, LEFT_BRACE_TOKEN);
   	        break;
 
 	    case RIGHT_BRACE:
+            if ( stack_is_empty(stack) || stack_pop(stack) != LEFT_BRACE_TOKEN )
   	        break;
 
             case LEFT_BRACK:
+            stack_push(stack, LEFT_BRACK_TOKEN);
   	        break;	
 
 	    case RIGHT_BRACK:
+            if ( stack_is_empty(stack) || stack_pop(stack) != LEFT_BRACK_TOKEN )
   	        break;
 
             case STRING_END:
