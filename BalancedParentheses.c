@@ -12,7 +12,7 @@
 const char* const VALID = "valid";
 const char* const INVALID = "invalid";
 const char* const UNCLOSED_PARENS_LENGTH = "Unclosed parentheses at end of string of length %d\n";
-const char* const CANNOT_CLOSE_PAREN_AT_INDEX = "Cannot close parentheses at index %d\n";
+const char* const CANNOT_CLOSE_PAREN_AT_INDEX = "Cannot close the parentheses at index %d\n";
 const char* const NONEMPTY_STACK_LENGTH = "Nonempty stack at end of string of length %d\n";
 const char* const VALID_STRING_LENGTH = "Valid string of length %d\n";
 
@@ -90,7 +90,7 @@ int isValid(char* string)
 	{
 	    case LEFT_PAREN:	    
                 stack_push(stack, LEFT_PAREN_TOKEN);
-		break;
+		      break;
 
 	    case RIGHT_PAREN:
                 if ( stack_is_empty(stack) || stack_pop(stack) != LEFT_PAREN_TOKEN )
