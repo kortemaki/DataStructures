@@ -25,8 +25,8 @@ struct BinaryTreeNode
   void* data;                   //data for this node
   struct BinaryTreeNode* left;  //left subtree
   struct BinaryTreeNode* right; //right subtree
-  compareFunction comp;         //function for comparing the data
-  printFunction print;          //function for printing the data
+  compareFunction compFunc;     //function for comparing the data
+  printFunction printFunc;      //function for printing the data
 };
 typedef struct BinaryTreeNode* BST_t;
 
