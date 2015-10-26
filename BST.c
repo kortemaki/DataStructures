@@ -21,8 +21,8 @@ BST_t BST_new()
   t->left = NULL;
   t->right = NULL;
   t->data = NULL;
-  t->printFunction = &print_pointer;
-  t->compareFunction = &compare_pointer;
+  t->printFunc = &print_pointer;
+  t->compFunc = &compare_pointer;
   return t;
 }
 
@@ -47,8 +47,8 @@ BST_t BST_new_val(void* x)
 BST_t BST_new_like(BST_t tree)
 {
   BST_t t = BST_new();
-  t->printFunction = tree->printFunction;
-  t->compareFunction = tree->compareFunction;
+  t->printFunc = tree->printFunc;
+  t->compFunc = tree->compFunc;
   return t;
 }
 
@@ -70,7 +70,7 @@ void BST_print_in_order(BST_t t, char* prefix)
     BST_print_in_order(t->left, innerPrefix);
     
     //print root data
-    t->printFunction(t->data,prefix);
+    t->printFunc(t->data,prefix);
 
     //print right subtree
     BST_print_in_order(t->right, innerPrefix);
@@ -93,116 +93,6 @@ int compare_pointer( void* p1, void* p2 )
   return (int) (p1 - p2);
 }
 
-////////////////////////////
-//  List code
-
-/**
- * List constructor
- */
-list_t list_new()
-{
-  list_t new = (list_t) malloc(sizeof( struct list_h ));
-  new->size = 0;
-  new->start = NULL;
-  new->end = NULL;
-  new->printFunc = &print_pointer; //by default, print the addresses of each element
-  return new;
-}
-
-#ifdef ENABLE_TYPECHECK
-/**
- * Query method to check whether a list_t is a valid list
- * Returns 1 if list is a list
- * or 0 if it is not
- */
-int list_is_list(list_t list)
-{
-  // Ensuring list is not NULL
-  if( list == NULL )
-  {
-    printf("        Null list invalid\n");
-    return 0;
-  }
-
-  // Check start and end are appropriate given size
-  if( list->size == 0 )
-  {
-    // We should have NULL start and end
-    if(list->start==NULL && list->end==NULL)
-      return 1;
-    else
-    {
-      printf("        List of size 0 invalid\n");
-      return 0;
-    }
-  } 
-  else if( list->size == 1 )
-  {
-    // We should have only one non-NULL node with a NULL next pointer
-    if( !( list->start != NULL 
-        && list->start == list->end 
-        && list->end->next == NULL ) )
-    {
-      printf("        List of size 1 invalid\n");
-      return 0;
-    }
-    return 1;
-  }   
-  else
-  {
-    // We should have more than one non-NULL node and end should have a NULL next
-    if( !( list->start != NULL && list->end != NULL
-        && list->start != list->end 
-        && list->end->next == NULL ) )
-    {
-      printf("        List of size 2+ invalid\n");
-      return 0;
-    }
-  }
-
-  // Check if list->start is circular
-  node* singles = list->start; // Walk down the list one node at a time
-  node* doubles = list->start; // Walk down the list two nodes at a time
-  while( doubles != NULL && singles != doubles )
-  {
-    singles = singles->next;
-    doubles = doubles->next;
-    if(doubles != NULL)
-      doubles = doubles->next;
-  }
-  if( singles == doubles && singles != NULL )
-  {
-    // Detected circular condition
-    printf("        Circular linked list invalid\n");
-    return 0;
-  }
-
-  // Check that the list terminates appropriately
-  node* n = list->start;
-  int count = 0;
-  while( n != NULL && n != list->end && count < list->size )
-  {
-    count++;
-    n = n->next;
-  }
-  // Ensure the last node in list is list->end
-  if( n != list->end )
-  {
-    printf("        Final node of list invalid\n");
-    return 0;
-  }
-  count++;
-  // Ensure the length of list is equal to its size
-  if( count != list->size )
-  {
-    printf("        List length invalid\n");
-    return 0;
-  }
-
-  // Conclude: list is a list
-  return 1;
-} 
-#endif
 
 /**
  * Method to query a tree for the length of its longest path from root to leaf
@@ -231,6 +121,7 @@ int BST_height(BST_t tree)
 
 /**
  * Add x into the BST as a leaf node according to the sorted order
+ *   implied by the BST's compare function.
  */
 void BST_insert(BST_t tree, void* x)
 {
@@ -244,14 +135,14 @@ void BST_insert(BST_t tree, void* x)
 
     //look up x in the tree
     // compare x with tree->data
-    if(tree->compareFunction(tree->data, x)==0)
+    if(tree->compFunc(tree->data, x)==0)
     {
       //if x is already in the tree
       //  replace the data with x
       tree->data = x;
       return;
     }
-    else if(tree->compareFunction(tree->data,x) > 0)
+    else if(tree->compFunc(tree->data,x) > 0)
     {
       //x in left subtree
       
@@ -280,7 +171,7 @@ void BST_insert(BST_t tree, void* x)
       }
     
       // recursively insert into right subtree
-      BST_insert(tree->rightt, x);
+      BST_insert(tree->right, x);
       return;
     }
   }
@@ -304,12 +195,12 @@ void* BST_find(BST_t tree, void* x)
 
     //look up x in the tree
     // compare x with tree->data
-    if(tree->compareFunction(tree->data, x)==0)
+    if(tree->compFunc(tree->data, x)==0)
     {
       //We found a match!
       return tree->data;
     }
-    else if(tree->compareFunction(tree->data,x) > 0)
+    else if(tree->compFunc(tree->data,x) > 0)
     {
       //x in left subtree      
       return BST_find(tree->left, x);
@@ -329,9 +220,95 @@ void BST_change_print_function( BST_t tree, printFunction func )
   tree->printFunc = func;
 }
 
-void BST_change_compare_function(BST_t tree, compareFunction func )
+void BST_change_compare_function( BST_t tree, compareFunction func )
 {
   tree->compFunc = func;
 }
 
+void print_int( void* el, char* prefix )
+{
+  printf("\n%sValue: %d\n%s", prefix, (int) el, prefix);
 }
+
+/**
+ * convert int to binary
+ */
+char *int_to_binary(int x)
+{
+  char* b = malloc(sizeof(int)*8+1);
+  b[0] = '\0';
+
+  int i;
+  for (i = sizeof(int)*8 - 1; i >= 0; i--)
+  {
+    size_t z = 1 << i;
+    strcat(b, ((x & z) == z) ? "1" : "0");
+  }
+
+  return b;
+}
+
+void print_binary( void* el, char* prefix )
+{
+  char* val = int_to_binary((int) el);
+  printf("\n%sValue: %d_10 = %s_2 (%d 1s)\n%s", prefix, (int) el, val, count_ones(val), prefix);
+}
+
+/**
+ * Compares two int values
+ * Returns zero if p1==p2
+ *  and a positive value if p1 > p2
+ *  else a negative value
+ */
+int compare_int( void* p1, void* p2 )
+{
+  return (int) (p1 - p2);
+}
+
+int count_ones(char* x)
+{
+  int count;
+  for(count = 0; *x != '\0'; x++)
+  {
+    if(*x == '1')
+      count++;
+  }
+  return count;
+}
+
+int compare_ones( void* p1, void* p2 )
+{
+  int onesComp = compare_int((void*) count_ones(int_to_binary((int) p1)), 
+			     (void*) count_ones(int_to_binary((int) p2)));
+  if(onesComp == 0)
+    return -compare_int(p1,p2);
+  else
+    return onesComp;
+}
+
+///////////////////////////////////////////////////
+
+/**
+ * Basic script to demonstrate functionality of binary search tree
+ * Adds the values 1 through 10 to a BST and print the tree at each step
+ */
+int main()
+{
+
+  BST_t tree = BST_new_val((void*) rand());
+  BST_change_compare_function(tree, &compare_ones);
+  BST_change_print_function(tree, &print_binary);
+
+  int i;
+  for( i = 9; i >= 1; i-- )
+  {
+    printf("\n----------------------------\n");
+    
+    BST_insert( tree, (void*) rand() );
+    BST_print_in_order( tree, "" );
+  }
+
+  return 0;
+}
+
+

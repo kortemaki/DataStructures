@@ -52,7 +52,7 @@ BST_t BST_new_val(void* x);
  * 
  * If n is NULL, do nothing
  */
-void BST_print_in_order(BST_t n);
+void BST_print_in_order(BST_t n, char* prefix);
 
 ////////////////////////////
 //  Binary search tree
@@ -70,6 +70,7 @@ int BST_is_BST(BST_t tree);
  * Method to query a tree for the length of its longest path from root to leaf
  */
 int BST_height(BST_t tree);
+
 /**
  * Add x as a leaf node in the tree
  */
